@@ -1,33 +1,6 @@
 {
   "main": [
     {
-      "name": "Home",
-      "url": "/"
-    },
-    {
-      "name": "APIs",
-      "url": "/apis",
-      "hasChildren": true,
-      "children": [
-        {
-          "name": "Celebrity Profiles",
-          "url": "/apis/celebrities"
-        },
-        {
-          "name": "Outfits & Fashion",
-          "url": "/apis/outfits"
-        },
-        {
-          "name": "News & Articles",
-          "url": "/apis/news"
-        },
-        {
-          "name": "Movies & Reviews",
-          "url": "/apis/movies"
-        }
-      ]
-    },
-    {
       "name": "Documentation",
       "url": "/docs"
     },
@@ -40,7 +13,7 @@
       "url": "/blogs"
     },
     {
-      "name": "Support",
+      "name": "Contact Us",
       "url": "/contact"
     }
   ],
