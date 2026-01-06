@@ -1,6 +1,8 @@
 "use client";
 
 import Logo from "@components/Logo";
+import UserProfile from "../../components/auth/UserProfile";
+import { useAuth } from "../../contexts/AuthContext";
 import menu from "@config/menu.json";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,6 +11,7 @@ import config from "../../config/config.json";
 
 const Header = () => {
   const pathname = usePathname();
+  const { isAuthenticated, loading } = useAuth();
 
   // distructuring the main menu from menu object
   const { main } = menu;
@@ -18,7 +21,6 @@ const Header = () => {
 
   // logo source
   const { logo } = config.site;
-  const { enable, label, link } = config.nav_button;
 
   return (
     <header className="header">
@@ -96,24 +98,41 @@ const Header = () => {
                 )}
               </React.Fragment>
             ))}
-            {enable && (
+            {!isAuthenticated && !loading && (
               <li className="md:hidden">
                 <Link
                   className="btn btn-primary z-0 py-[14px]"
-                  href={link}
+                  href="/auth/login"
                   rel=""
                 >
-                  {label}
+                  Login
                 </Link>
               </li>
             )}
           </ul>
         </div>
-        {enable && (
-          <div className="d-flex order-1 ml-auto hidden min-w-[200px] items-center justify-end md:order-2 md:ml-0 md:flex">
-            <Link className="btn btn-primary z-0 py-[14px]" href={link} rel="">
-              {label}
-            </Link>
+        
+        {/* Auth Section */}
+        {!loading && (
+          <div className="order-1 ml-auto hidden min-w-[200px] items-center justify-end md:order-2 md:ml-0 md:flex">
+            {isAuthenticated ? (
+              <UserProfile />
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link 
+                  className="text-gray-700 hover:text-primary transition-colors duration-200" 
+                  href="/auth/login"
+                >
+                  Login
+                </Link>
+                <Link 
+                  className="btn btn-primary z-0 py-[14px]" 
+                  href="/auth/signup"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </nav>

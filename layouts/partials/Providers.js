@@ -1,4 +1,5 @@
 "use client";
+import { AuthProvider } from "../../contexts/AuthContext";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
@@ -7,7 +8,12 @@ const Providers = ({ children }) => {
   useEffect(() => {
     window.scroll(0, 0);
   }, [pathname]);
-  return children;
+  
+  return (
+    <AuthProvider>
+      {children}
+    </AuthProvider>
+  );
 };
 
 export default Providers;
