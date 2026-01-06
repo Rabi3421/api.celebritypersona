@@ -7,6 +7,9 @@ import { usePathname } from 'next/navigation';
 const DashboardSidebar = () => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    'API Management': pathname.startsWith('/dashboard/api')
+  });
 
   const menuItems = [
     {
@@ -65,6 +68,71 @@ const DashboardSidebar = () => {
       )
     },
     {
+      name: 'API Management',
+      href: '/dashboard/api',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+      subItems: [
+        {
+          name: 'API Keys',
+          href: '/dashboard/api/keys',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-11.83 1.24M9 10a6 6 0 016.53 6.53M9 10a6 6 0 10.64 9.71M9 10l3 3m4-4a2 2 0 012 2v4a1 1 0 01-1 1h-4a2 2 0 01-2-2v-4z" />
+            </svg>
+          )
+        },
+        {
+          name: 'Usage Analytics',
+          href: '/dashboard/api/analytics',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          )
+        },
+        {
+          name: 'Rate Limits',
+          href: '/dashboard/api/limits',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          )
+        },
+        {
+          name: 'API Status',
+          href: '/dashboard/api/status',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          )
+        },
+        {
+          name: 'Webhooks',
+          href: '/dashboard/api/webhooks',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+          )
+        },
+        {
+          name: 'Documentation',
+          href: '/dashboard/api/docs',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          )
+        }
+      ]
+    },
+    {
       name: 'Settings',
       href: '/dashboard/settings',
       icon: (
@@ -75,6 +143,13 @@ const DashboardSidebar = () => {
       )
     }
   ];
+
+  const toggleSection = (sectionName) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionName]: !prev[sectionName]
+    }));
+  };
 
   const isActive = (href) => {
     if (href === '/dashboard') {
@@ -105,18 +180,66 @@ const DashboardSidebar = () => {
           <ul className="space-y-2">
             {menuItems.map((item) => (
               <li key={item.name}>
-                <Link
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                    isActive(item.href)
-                      ? 'bg-primary text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  {item.icon}
-                  <span className="font-medium">{item.name}</span>
-                </Link>
+                {item.subItems ? (
+                  <>
+                    <button
+                      onClick={() => toggleSection(item.name)}
+                      className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors duration-200 ${
+                        pathname.startsWith(item.href)
+                          ? 'bg-primary text-white'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        {item.icon}
+                        <span className="font-medium">{item.name}</span>
+                      </div>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          expandedSections[item.name] ? 'rotate-180' : ''
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {expandedSections[item.name] && (
+                      <ul className="mt-2 ml-4 space-y-1">
+                        {item.subItems.map((subItem) => (
+                          <li key={subItem.name}>
+                            <Link
+                              href={subItem.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors duration-200 ${
+                                isActive(subItem.href)
+                                  ? 'bg-blue-50 text-primary border-r-2 border-primary'
+                                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                              }`}
+                            >
+                              {subItem.icon}
+                              <span className="text-sm font-medium">{subItem.name}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                      isActive(item.href)
+                        ? 'bg-primary text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    {item.icon}
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
