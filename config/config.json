@@ -1,12 +1,12 @@
 {
   "site": {
-    "title": "Bigspring Light Nextjs",
+    "title": "Celebrity Persona API - Developer Platform",
     "base_url": "/",
     "favicon": "/images/favicon.png",
     "logo": "/images/logo.png",
     "logo_width": "200",
     "logo_height": "48",
-    "logo_text": "Bigspring Light"
+    "logo_text": "Celebrity Persona API"
   },
 
   "settings": {
@@ -29,8 +29,8 @@
   },
 
   "metadata": {
-    "meta_author": "Themefisher",
-    "meta_image": "",
-    "meta_description": "A SAAS template for nextjs"
+    "meta_author": "Celebrity Persona API",
+    "meta_image": "/images/api-meta-image.png",
+    "meta_description": "Access comprehensive celebrity data through our affordable APIs. Get celebrity profiles, outfits, news, movies, and reviews for your applications."
   }
 }

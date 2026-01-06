@@ -5,50 +5,85 @@
       "url": "/"
     },
     {
-      "name": "Blog",
-      "url": "/blogs"
+      "name": "APIs",
+      "url": "/apis",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Celebrity Profiles",
+          "url": "/apis/celebrities"
+        },
+        {
+          "name": "Outfits & Fashion",
+          "url": "/apis/outfits"
+        },
+        {
+          "name": "News & Articles",
+          "url": "/apis/news"
+        },
+        {
+          "name": "Movies & Reviews",
+          "url": "/apis/movies"
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "url": "/docs"
     },
     {
       "name": "Pricing",
       "url": "/pricing"
     },
     {
-      "name": "Contact",
-      "url": "/contact"
+      "name": "Blog",
+      "url": "/blogs"
     },
     {
-      "name": "FAQ",
-      "url": "/faq"
+      "name": "Support",
+      "url": "/contact"
     }
   ],
   "footer": [
     {
-      "name": "Company",
+      "name": "APIs",
       "menu": [
         {
-          "text": "Pricing",
-          "url": "/pricing"
+          "text": "Celebrity Profiles",
+          "url": "/apis/celebrities"
         },
         {
-          "text": "Quick Start",
-          "url": "#"
+          "text": "Outfits & Fashion",
+          "url": "/apis/outfits"
+        },
+        {
+          "text": "News & Articles",
+          "url": "/apis/news"
+        },
+        {
+          "text": "Movies & Reviews",
+          "url": "/apis/movies"
         }
       ]
     },
     {
-      "name": "Product",
+      "name": "Developers",
       "menu": [
         {
-          "text": "Features",
-          "url": "#"
+          "text": "Documentation",
+          "url": "/docs"
         },
         {
-          "text": "Platform",
-          "url": "#"
+          "text": "Quick Start",
+          "url": "/docs/quickstart"
         },
         {
-          "text": "Pricing",
-          "url": "/pricing"
+          "text": "Code Examples",
+          "url": "/docs/examples"
+        },
+        {
+          "text": "API Reference",
+          "url": "/docs/reference"
         }
       ]
     },
@@ -56,16 +91,20 @@
       "name": "Support",
       "menu": [
         {
+          "text": "Pricing",
+          "url": "/pricing"
+        },
+        {
           "text": "FAQ",
           "url": "/faq"
         },
         {
-          "text": "Privacy Policy",
-          "url": "#"
+          "text": "Contact Us",
+          "url": "/contact"
         },
         {
-          "text": "Terms & Conditions",
-          "url": "#"
+          "text": "Status Page",
+          "url": "/status"
         }
       ]
     }
