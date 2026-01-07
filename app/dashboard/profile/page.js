@@ -6,15 +6,19 @@ import { useEffect, useState } from 'react';
 import { AuthService } from '../../../lib/auth';
 
 export default function ProfilePage() {
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-        const response = await AuthService.apiCall(`${baseUrl}/api/auth/me`, {
+        const response = await AuthService.apiCall(`${baseUrl}/api/auth/profile`, {
           method: 'GET',
           credentials: 'include', // send cookies
         });
@@ -28,6 +32,7 @@ export default function ProfilePage() {
         const data = await response.json();
         if (data.success && data.user) {
           setUser(data.user);
+          setEditName(data.user.name);
         } else {
           setError('Failed to fetch user data');
         }
@@ -40,6 +45,7 @@ export default function ProfilePage() {
     };
     fetchUser();
   }, []);
+
 
   if (loading) {
     return (
@@ -61,6 +67,46 @@ export default function ProfilePage() {
     );
   }
 
+
+  const handleCancel = () => {
+    setEditName(user.name);
+    setSuccessMsg('');
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSuccessMsg('');
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+      const response = await AuthService.apiCall(`${baseUrl}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ name: editName }),
+      });
+      if (!response) {
+        setError('Authentication failed. Please login again.');
+        setIsSaving(false);
+        return;
+      }
+      const data = await response.json();
+      if (data.success && data.user) {
+        setUser(data.user);
+        setEditName(data.user.name);
+        setSuccessMsg(data.message || 'Profile updated successfully!');
+      } else {
+        setError(data.message || 'Failed to update profile');
+      }
+    } catch (err) {
+      setError('Failed to update profile');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -69,6 +115,12 @@ export default function ProfilePage() {
             <h3 className="text-lg font-medium text-gray-900">Profile Information</h3>
           </div>
           <div className="p-6">
+            {successMsg && (
+              <div className="mb-4 text-green-600 font-medium">{successMsg}</div>
+            )}
+            {error && (
+              <div className="mb-4 text-red-600 font-medium">{error}</div>
+            )}
             <div className="flex items-center space-x-6 mb-6">
               <div className="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-medium">
                 {user?.profileImage && user.profileImage !== '/default-profile.png' ? (
@@ -99,9 +151,13 @@ export default function ProfilePage() {
                 <label className="block text-sm font-medium text-gray-700">Full Name</label>
                 <input
                   type="text"
-                  value={user?.name || ''}
-                  disabled
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-500"
+                  value={editName}
+                  onChange={e => {
+                    setEditName(e.target.value);
+                    setSuccessMsg('');
+                  }}
+                  disabled={isSaving}
+                  className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900`}
                 />
               </div>
               
@@ -134,6 +190,23 @@ export default function ProfilePage() {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 text-gray-500"
                 />
               </div>
+            </div>
+
+            <div className="flex space-x-3 mt-6">
+              <button
+                className={`px-4 py-2 rounded-md font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50`}
+                onClick={handleSave}
+                disabled={isSaving || editName.trim() === '' || editName === user.name}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button
+                className="px-4 py-2 rounded-md font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors"
+                onClick={handleCancel}
+                disabled={isSaving || editName === user.name}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

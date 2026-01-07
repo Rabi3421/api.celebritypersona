@@ -13,7 +13,7 @@ const ExampleApiUsage = () => {
   // Example 1: Using the hook
   const fetchUserProfile = async () => {
     try {
-      const result = await apiCall('/api/auth/me');
+      const result = await apiCall('/api/auth/profile');
       setData(result);
     } catch (err) {
       console.error('Failed to fetch profile:', err);
