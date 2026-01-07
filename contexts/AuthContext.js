@@ -23,11 +23,23 @@ export const AuthProvider = ({ children }) => {
       const userData = AuthService.getUser();
 
       if (token && userData) {
-        setUser(userData);
+        // Check if token is expired and needs refresh
+        if (AuthService.isTokenExpired()) {
+          console.log('Token expired on initialization, attempting refresh...');
+          const refreshResult = await AuthService.refreshToken();
+          if (refreshResult.success) {
+            setUser(userData);
+          } else {
+            console.log('Token refresh failed on initialization, logging out...');
+            AuthService.logout();
+          }
+        } else {
+          setUser(userData);
+        }
       } else if (token && !userData) {
         // Token exists but no user data, try to refresh
-        const refreshed = await AuthService.refreshToken();
-        if (!refreshed) {
+        const refreshResult = await AuthService.refreshToken();
+        if (!refreshResult.success) {
           AuthService.logout();
         }
       }
@@ -35,6 +47,23 @@ export const AuthProvider = ({ children }) => {
     };
 
     initializeAuth();
+
+    // Set up periodic token refresh check (every 4 minutes)
+    const tokenRefreshInterval = setInterval(async () => {
+      const token = AuthService.getToken();
+      const user = AuthService.getUser();
+      
+      if (token && user && AuthService.isTokenExpired()) {
+        console.log('Periodic token refresh check - token expired, refreshing...');
+        const refreshResult = await AuthService.refreshToken();
+        if (!refreshResult.success) {
+          console.log('Periodic token refresh failed, logging out...');
+          AuthService.logout();
+        }
+      }
+    }, 4 * 60 * 1000); // Check every 4 minutes
+
+    return () => clearInterval(tokenRefreshInterval);
   }, []);
 
   const login = async (email, password) => {
@@ -50,6 +79,9 @@ export const AuthProvider = ({ children }) => {
   const signup = async (name, email, password) => {
     setLoading(true);
     const result = await AuthService.signup(name, email, password);
+    if (result.success && result.user) {
+      setUser(result.user);
+    }
     setLoading(false);
     return result;
   };

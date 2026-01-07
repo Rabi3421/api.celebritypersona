@@ -3,6 +3,7 @@
 
 import DashboardLayout from '../../../components/dashboard/DashboardLayout';
 import { useEffect, useState } from 'react';
+import { AuthService } from '../../../lib/auth';
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -13,20 +14,25 @@ export default function ProfilePage() {
     const fetchUser = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-        const res = await fetch(`${baseUrl}/api/auth/me`, {
+        const response = await AuthService.apiCall(`${baseUrl}/api/auth/me`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           credentials: 'include', // send cookies
         });
-        const data = await res.json();
+        
+        if (!response) {
+          // AuthService.apiCall returns null if token refresh failed and user was logged out
+          setError('Authentication failed. Please login again.');
+          return;
+        }
+        
+        const data = await response.json();
         if (data.success && data.user) {
           setUser(data.user);
         } else {
           setError('Failed to fetch user data');
         }
       } catch (err) {
+        console.error('Profile fetch error:', err);
         setError('Failed to fetch user data');
       } finally {
         setLoading(false);
